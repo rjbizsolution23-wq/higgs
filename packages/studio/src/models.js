@@ -1,5 +1,88 @@
 // Auto-generated from models_dump.json
 export const t2iModels = [
+
+  {
+    "id": "nvidia-flux-klein",
+    "name": "Flux 2 Klein 4B (NVIDIA)",
+    "endpoint": "nvidia/predictions",
+    "inputs": {
+      "prompt": {
+        "description": "Text prompt describing the image.",
+        "type": "string",
+        "title": "Prompt",
+        "name": "prompt"
+      },
+      "aspect_ratio": {
+        "enum": [
+          "1:1",
+          "3:4",
+          "4:3",
+          "9:16",
+          "16:9"
+        ],
+        "title": "Aspect Ratio",
+        "name": "aspect_ratio",
+        "type": "string",
+        "description": "Aspect ratio of the output image.",
+        "default": "1:1"
+      }
+    }
+  },
+  {
+    "id": "nvidia-qwen-image",
+    "name": "Qwen Image (NVIDIA)",
+    "endpoint": "nvidia/predictions",
+    "inputs": {
+      "prompt": {
+        "description": "Text prompt describing the image.",
+        "type": "string",
+        "title": "Prompt",
+        "name": "prompt"
+      },
+      "aspect_ratio": {
+        "enum": [
+          "1:1",
+          "3:4",
+          "4:3",
+          "9:16",
+          "16:9"
+        ],
+        "title": "Aspect Ratio",
+        "name": "aspect_ratio",
+        "type": "string",
+        "description": "Aspect ratio of the output image.",
+        "default": "1:1"
+      }
+    }
+  },
+  {
+    "id": "nvidia-sdxl",
+    "name": "Stable Diffusion XL (NVIDIA)",
+    "endpoint": "nvidia/predictions",
+    "inputs": {
+      "prompt": {
+        "description": "Text prompt describing the image.",
+        "type": "string",
+        "title": "Prompt",
+        "name": "prompt"
+      },
+      "aspect_ratio": {
+        "enum": [
+          "1:1",
+          "3:4",
+          "4:3",
+          "9:16",
+          "16:9"
+        ],
+        "title": "Aspect Ratio",
+        "name": "aspect_ratio",
+        "type": "string",
+        "description": "Aspect ratio of the output image.",
+        "default": "1:1"
+      }
+    }
+  }
+,
   {
     "id": "nano-banana",
     "name": "Nano Banana",
@@ -2198,6 +2281,80 @@ export const getAspectRatiosForModel = (modelId) => {
 // Text-to-Video Models
 // ==========================================
 export const t2vModels = [
+
+  {
+    "id": "nvidia-cosmos-nano",
+    "name": "Cosmos 3 Nano (NVIDIA)",
+    "endpoint": "nvidia/predictions",
+    "inputs": {
+      "prompt": {
+        "type": "string",
+        "title": "Prompt",
+        "name": "prompt",
+        "description": "The prompt to generate the video"
+      },
+      "aspect_ratio": {
+        "enum": [
+          "16:9",
+          "9:16",
+          "1:1",
+          "4:3",
+          "3:4"
+        ],
+        "title": "Aspect Ratio",
+        "name": "aspect_ratio",
+        "type": "string",
+        "description": "Aspect ratio of the output video.",
+        "default": "16:9"
+      },
+      "duration": {
+        "title": "Duration",
+        "name": "duration",
+        "type": "int",
+        "description": "The duration of the generated video in seconds",
+        "default": 5,
+        "minValue": 5,
+        "maxValue": 5,
+        "step": 1
+      }
+    }
+  },
+  {
+    "id": "nvidia-svd",
+    "name": "Stable Video Diffusion (NVIDIA)",
+    "endpoint": "nvidia/predictions",
+    "inputs": {
+      "prompt": {
+        "type": "string",
+        "title": "Prompt",
+        "name": "prompt",
+        "description": "Describe the motion of the video"
+      },
+      "aspect_ratio": {
+        "enum": [
+          "16:9",
+          "9:16",
+          "1:1"
+        ],
+        "title": "Aspect Ratio",
+        "name": "aspect_ratio",
+        "type": "string",
+        "description": "Aspect ratio of the output video.",
+        "default": "16:9"
+      },
+      "duration": {
+        "title": "Duration",
+        "name": "duration",
+        "type": "int",
+        "description": "The duration of the generated video in seconds",
+        "default": 4,
+        "minValue": 4,
+        "maxValue": 4,
+        "step": 1
+      }
+    }
+  }
+,
   {
     "id": "seedance-lite-t2v",
     "name": "Seedance Lite",

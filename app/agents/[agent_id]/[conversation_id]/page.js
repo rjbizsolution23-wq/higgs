@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import AgentChatClient from "../AgentChatClient";
+import { getNvidiaAgentDetails, getNvidiaConversationHistory } from "../../../api/v1/nvidia/nvidia-agents-utils.js";
+import { getCreditsStatus } from "../../../api/v1/nvidia/nvidia-utils.js";
 
 /**
  * Server component — fetches both agentDetails and initialHistory
@@ -95,11 +97,34 @@ export default async function AgentConversationPage({ params }) {
 
   console.log(`[ConvPage] Loading for agent: ${agent_id}, conv: ${conversation_id}, hasKey: ${!!apiKey}`);
 
-  const [agentDetails, initialHistory, userData] = await Promise.all([
-    fetchAgentDetails(agent_id, apiKey),
-    fetchHistory(agent_id, conversation_id, apiKey),
-    fetchUserData(apiKey)
-  ]);
+  let agentDetails = null;
+  let initialHistory = null;
+  let userData = null;
+
+  if (agent_id.startsWith('nvidia-') || conversation_id.startsWith('nvidia-')) {
+    // Local NVIDIA routes
+    const [details, history, credits] = await Promise.all([
+      getNvidiaAgentDetails(agent_id),
+      getNvidiaConversationHistory(conversation_id),
+      getCreditsStatus()
+    ]);
+    agentDetails = details;
+    initialHistory = history;
+    userData = {
+      email: "rick@rjbusinesssolutions.com",
+      balance: credits.remaining
+    };
+  } else {
+    // Normal MuAPI routes
+    const [details, history, user] = await Promise.all([
+      fetchAgentDetails(agent_id, apiKey),
+      fetchHistory(agent_id, conversation_id, apiKey),
+      fetchUserData(apiKey)
+    ]);
+    agentDetails = details;
+    initialHistory = history;
+    userData = user;
+  }
 
   return (
     <AgentChatClient 
@@ -109,3 +134,4 @@ export default async function AgentConversationPage({ params }) {
     />
   );
 }
+

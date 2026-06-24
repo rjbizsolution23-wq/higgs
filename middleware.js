@@ -12,7 +12,9 @@ export function middleware(request) {
         // Exclude paths that have their own dedicated route handlers with custom logic
         const isHandledByRoute = url.pathname.startsWith('/api/v1/creative-agent') || 
                                 url.pathname.startsWith('/api/v1/get_upload_url') ||
-                                url.pathname.startsWith('/api/v1/upload-binary');
+                                url.pathname.startsWith('/api/v1/upload-binary') ||
+                                url.pathname.startsWith('/api/v1/nvidia') ||
+                                url.pathname.startsWith('/api/v1/cloudflare');
 
         if (url.pathname.startsWith('/api/v1') && !isHandledByRoute) {
             const targetUrl = new URL(url.pathname + url.search, 'https://api.muapi.ai');

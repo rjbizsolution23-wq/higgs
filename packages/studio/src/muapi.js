@@ -63,7 +63,7 @@ async function submitAndPoll(endpoint, payload, key, onRequestId, maxAttempts = 
 export async function generateImage(apiKey, params) {
     const modelInfo = getModelById(params.model);
     const endpoint = modelInfo?.endpoint || params.model;
-    const payload = { prompt: params.prompt };
+    const payload = { prompt: params.prompt, model: params.model };
     if (params.aspect_ratio) payload.aspect_ratio = params.aspect_ratio;
     if (params.resolution) payload.resolution = params.resolution;
     if (params.quality) payload.quality = params.quality;
@@ -82,7 +82,7 @@ export async function generateImage(apiKey, params) {
 export async function generateI2I(apiKey, params) {
     const modelInfo = getI2IModelById(params.model);
     const endpoint = modelInfo?.endpoint || params.model;
-    const payload = {};
+    const payload = { model: params.model };
     if (params.prompt) payload.prompt = params.prompt;
     const imageField = modelInfo?.imageField || 'image_url';
     const imagesList = params.images_list?.length > 0 ? params.images_list : (params.image_url ? [params.image_url] : null);
@@ -102,7 +102,7 @@ export async function generateI2I(apiKey, params) {
 export async function generateVideo(apiKey, params) {
     const modelInfo = getVideoModelById(params.model);
     const endpoint = modelInfo?.endpoint || params.model;
-    const payload = {};
+    const payload = { model: params.model };
     if (params.prompt) payload.prompt = params.prompt;
     if (params.aspect_ratio) payload.aspect_ratio = params.aspect_ratio;
     if (params.duration) payload.duration = params.duration;
@@ -116,7 +116,7 @@ export async function generateVideo(apiKey, params) {
 export async function generateI2V(apiKey, params) {
     const modelInfo = getI2VModelById(params.model);
     const endpoint = modelInfo?.endpoint || params.model;
-    const payload = {};
+    const payload = { model: params.model };
     if (params.prompt) payload.prompt = params.prompt;
     const imageField = modelInfo?.imageField || 'image_url';
     if (params.images_list && params.images_list.length > 0) {
@@ -164,7 +164,7 @@ export async function processV2V(apiKey, params) {
     const modelInfo = getV2VModelById(params.model);
     const endpoint = modelInfo?.endpoint || params.model;
     const videoField = modelInfo?.videoField || 'video_url';
-    const payload = { [videoField]: params.video_url };
+    const payload = { [videoField]: params.video_url, model: params.model };
     if (modelInfo?.imageField && params.image_url) {
         payload[modelInfo.imageField] = params.image_url;
     }

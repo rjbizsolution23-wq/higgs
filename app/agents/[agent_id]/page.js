@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import AgentChatClient from "./AgentChatClient";
+import { getNvidiaAgentDetails } from "../../api/v1/nvidia/nvidia-agents-utils.js";
+import { getCreditsStatus } from "../../api/v1/nvidia/nvidia-utils.js";
 
 /**
  * Server component — fetches agentDetails from the /api/agents proxy
@@ -74,10 +76,26 @@ export default async function AgentPage({ params }) {
 
   console.log(`[AgentPage] Loading page for agent: ${agent_id}, hasKey: ${!!apiKey}`);
 
-  const [agentDetails, userData] = await Promise.all([
-    fetchAgentDetails(agent_id, apiKey),
-    fetchUserData(apiKey)
-  ]);
+  let agentDetails = null;
+  let userData = null;
+
+  if (agent_id.startsWith('nvidia-')) {
+    // Local NVIDIA agent route
+    agentDetails = await getNvidiaAgentDetails(agent_id);
+    const credits = await getCreditsStatus();
+    userData = {
+      email: "rick@rjbusinesssolutions.com",
+      balance: credits.remaining
+    };
+  } else {
+    // Normal MuAPI route
+    const [details, user] = await Promise.all([
+      fetchAgentDetails(agent_id, apiKey),
+      fetchUserData(apiKey)
+    ]);
+    agentDetails = details;
+    userData = user;
+  }
 
   return (
     <AgentChatClient 
@@ -87,3 +105,4 @@ export default async function AgentPage({ params }) {
     />
   );
 }
+

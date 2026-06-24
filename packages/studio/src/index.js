@@ -13,4 +13,7 @@ export { default as AgentStudio } from './components/AgentStudio';
 export { default as DesignAgentStudio } from './components/DesignAgentStudio';
 export { default as AppsStudio } from './components/AppsStudio';
 export { default as McpCliStudio } from './components/McpCliStudio';
+export { default as CanvasStudio } from './components/CanvasStudio';
+export { default as CloudflareStudio } from './components/CloudflareStudio';
 export * from './muapi';
+
