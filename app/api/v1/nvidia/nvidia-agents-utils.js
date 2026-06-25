@@ -181,7 +181,8 @@ export async function runNvidiaAgentChat(agentId, conversationId, userMessageTex
 
     const conversation = await getNvidiaConversationHistory(conversationId);
     
-    // Append user message
+    try {
+        // Append user message
     const userMsg = {
         id: `nvidia-msg-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
         role: 'user',
@@ -317,10 +318,41 @@ export async function runNvidiaAgentChat(agentId, conversationId, userMessageTex
         }
     ];
 
-    console.log(`[NVIDIA Agent Orchestrator] Invoking LLM for conversation ${conversationId}`);
+    console.log(`[NVIDIA Agent Orchestrator] Invoking Sovereign LLM Gateway for conversation ${conversationId}`);
 
+    let response;
+    let localUsed = false;
     try {
-        const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+        console.log(`[NVIDIA Agent Orchestrator] Attempting local gateway: http://127.0.0.1:8787/v1/chat/completions`);
+        response = await fetch('http://127.0.0.1:8787/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer nvapi-rj-nemesis-master-key-2026`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'nemesis-ultra',
+                messages: llmMessages,
+                temperature: 0.3,
+                top_p: 0.7,
+                max_tokens: 1024,
+                tools: tools,
+                tool_choice: 'auto'
+            })
+        });
+
+        if (response.ok) {
+            console.log(`[NVIDIA Agent Orchestrator] Local edge worker successfully handled query using nemesis-ultra.`);
+            localUsed = true;
+        } else {
+            const errText = await response.text();
+            console.warn(`[NVIDIA Agent Orchestrator] Local edge worker returned error status ${response.status}: ${errText}. Falling back...`);
+            throw new Error(`Local gateway status ${response.status}`);
+        }
+    } catch (localError) {
+        console.warn(`[NVIDIA Agent Orchestrator] Local edge worker unreachable or errored: ${localError.message}. Falling back to direct NVIDIA API...`);
+        
+        response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
@@ -341,6 +373,7 @@ export async function runNvidiaAgentChat(agentId, conversationId, userMessageTex
             const text = await response.text();
             throw new Error(`[LLM Error ${response.status}] ${text}`);
         }
+    }
 
         const resData = await response.json();
         const choice = resData.choices?.[0];
